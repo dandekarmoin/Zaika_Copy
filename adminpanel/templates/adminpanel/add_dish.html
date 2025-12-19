@@ -1,0 +1,39 @@
+{% extends "adminpanel/base_admin.html" %}
+{% block content %}
+
+<h3 class="fw-bold mt-4">Add New Dish</h3>
+
+<form method="POST" enctype="multipart/form-data" class="shadow p-4 mt-4 bg-white rounded">
+    {% csrf_token %}
+
+    <label class="fw-semibold">Dish Name</label>
+    <input type="text" name="name" class="form-control mb-3" required>
+
+    <label class="fw-semibold">Description</label>
+    <textarea name="description" class="form-control mb-3" required></textarea>
+
+    <label class="fw-semibold">Price (₹)</label>
+    <input type="number" name="price" class="form-control mb-3" required>
+
+    <label class="fw-semibold">Category</label>
+    <select name="category" class="form-control mb-3" required>
+        <option value="starters">Starters</option>
+        <option value="main_course">Main Course</option>
+        <option value="biryani">Biryani</option>
+        <option value="breads">Breads</option>
+        <option value="rice">Rice & Noodles</option>
+        <option value="snacks">Snacks</option>
+        <option value="beverages">Beverages</option>
+        <option value="desserts">Desserts</option>
+    </select>
+
+    <label class="fw-semibold">Image (upload)</label>
+    <input type="file" name="image" class="form-control mb-3">
+
+    <label class="fw-semibold">Or Image URL</label>
+    <input type="url" name="image_url" class="form-control mb-3" placeholder="https://example.com/image.jpg">
+
+    <button class="btn btn-success w-100" type="submit">Add Dish</button>
+</form>
+
+{% endblock %}

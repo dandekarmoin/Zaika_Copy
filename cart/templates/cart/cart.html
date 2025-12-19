@@ -1,0 +1,159 @@
+{% extends 'main/base.html' %}
+{% load static %}
+{% block content %}
+
+<style>
+    /* FORCE override base layout fogging everything */
+    body {
+        background: #f7f5f2 !important;
+    }
+
+    main, .content, .page-content, .main-content {
+        padding: 0 !important;
+        margin: 0 !important;
+        width: 100% !important;
+    }
+
+    .cart-wrapper {
+        max-width: 1100px;
+        margin: 60px auto; /* ensures visible layout */
+        padding: 20px;
+    }
+
+    .cart-title {
+        font-size: 2.4rem;
+        font-weight: 700;
+        text-align: center;
+        color: #146c43;
+        margin-bottom: 40px;
+    }
+
+    .cart-item-card {
+        background: #fff;
+        border-radius: 14px;
+        padding: 18px;
+        margin-bottom: 18px;
+        box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
+        border: 1px solid #eee;
+    }
+
+    .item-image {
+        width: 85px;
+        height: 85px;
+        object-fit: cover;
+        border-radius: 10px;
+        margin-right: 18px;
+    }
+
+    .item-name {
+        font-size: 1.3rem;
+        font-weight: 600;
+        margin-bottom: 5px;
+    }
+
+    .item-price {
+        color: #6c757d;
+        font-size: 1rem;
+    }
+
+    .subtotal {
+        font-size: 1.1rem;
+        font-weight: bold;
+        margin-top: 5px;
+    }
+
+    .btn-remove {
+        background: #ffd9d9;
+        border: none;
+        color: #d63333;
+        font-weight: bold;
+        padding: 6px 12px;
+        border-radius: 8px;
+        transition: 0.2s;
+    }
+
+    .btn-remove:hover {
+        background: #ffb3b3;
+    }
+
+    .summary-box {
+        background: #e9f7ef;
+        padding: 25px;
+        border-radius: 14px;
+        border: 1px solid #d1e7dd;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.06);
+        margin-top: 20px;
+    }
+
+    .summary-line {
+        font-size: 1.2rem;
+        margin-bottom: 10px;
+    }
+
+    .summary-total {
+        font-size: 1.4rem;
+        font-weight: 700;
+    }
+
+    .btn-checkout {
+        width: 100%;
+        margin-top: 18px;
+        padding: 14px 0;
+        font-size: 1.2rem;
+        border-radius: 10px;
+    }
+</style>
+
+<div class="cart-wrapper">
+
+    <h2 class="cart-title">Your Cart</h2>
+
+    {% if items %}
+    <div class="row">
+        <div class="col-lg-8">
+            {% for cart in items %}
+            <div class="cart-item-card d-flex align-items-center">
+
+                {% if cart.item.image %}
+                    <img src="{{ cart.item.image.url }}" class="item-image">
+                {% else %}
+                    <img src="{% static 'img/no-image.png' %}" class="item-image">
+                {% endif %}
+
+                <div class="flex-grow-1">
+                    <div class="item-name">{{ cart.item.name }}</div>
+                    <div class="item-price">₹{{ cart.item.price }} × {{ cart.quantity }}</div>
+                    <div class="subtotal">Subtotal: ₹{{ cart.total_price }}</div>
+                </div>
+
+                <form method="POST" action="{% url 'remove_from_cart' cart.item.id %}">
+                    {% csrf_token %}
+                    <button class="btn-remove">Remove</button>
+                </form>
+
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="col-lg-4">
+            <div class="summary-box">
+                <div class="summary-line">Total Items: <strong>{{ items|length }}</strong></div>
+                <div class="summary-line summary-total">Grand Total: ₹{{ total }}</div>
+            </div>
+
+            <a href="{% url 'checkout' %}" class="btn btn-success btn-checkout">
+                Proceed to Checkout
+            </a>
+        </div>
+    </div>
+
+    {% else %}
+    <div class="text-center py-5">
+        <h3 class="text-secondary">Your cart is empty.</h3>
+        <a href="{% url 'home' %}" class="btn btn-primary mt-3">Browse Menu</a>
+    </div>
+    {% endif %}
+
+</div>
+
+{% endblock %}

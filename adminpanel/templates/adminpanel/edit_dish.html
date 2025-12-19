@@ -1,0 +1,74 @@
+{% extends "adminpanel/base_admin.html" %}
+{% load static %}
+{% block content %}
+
+<h3 class="fw-bold mt-4">Edit Dish</h3>
+
+<form method="POST" enctype="multipart/form-data" class="shadow p-4 mt-4 bg-white rounded">
+    {% csrf_token %}
+
+    <label class="fw-semibold">Dish Name</label>
+    <input type="text" name="name" value="{{ dish.name }}" class="form-control mb-3" required>
+
+    <label class="fw-semibold">Description</label>
+    <textarea name="description" class="form-control mb-3" required>{{ dish.description }}</textarea>
+
+    <label class="fw-semibold">Price (₹)</label>
+    <input type="number" name="price" value="{{ dish.price }}" class="form-control mb-3" required>
+
+    <label class="fw-semibold">Category</label>
+    <select name="category" class="form-control mb-3">
+        <option value="starters" {% if dish.category == "starters" %} selected {% endif %}>Starters</option>
+        <option value="main_course" {% if dish.category == "main_course" %} selected {% endif %}>Main Course</option>
+        <option value="biryani" {% if dish.category == "biryani" %} selected {% endif %}>Biryani</option>
+        <option value="breads" {% if dish.category == "breads" %} selected {% endif %}>Breads</option>
+        <option value="rice" {% if dish.category == "rice" %} selected {% endif %}>Rice & Noodles</option>
+        <option value="snacks" {% if dish.category == "snacks" %} selected {% endif %}>Snacks</option>
+        <option value="beverages" {% if dish.category == "beverages" %} selected {% endif %}>Beverages</option>
+        <option value="desserts" {% if dish.category == "desserts" %} selected {% endif %}>Desserts</option>
+    </select>
+
+    <label class="fw-semibold">Current Image</label>
+    <div class="mb-2">
+        {% if dish.image %}
+            <img id="current-image" src="{{ dish.image.url }}" class="img-thumbnail" style="max-width:200px; height:auto;" />
+        {% else %}
+            <img id="current-image" src="{% static 'images/default-food.png' %}" class="img-thumbnail" style="max-width:200px; height:auto;" />
+        {% endif %}
+    </div>
+
+    <label class="fw-semibold">Image (upload)</label>
+    <input type="file" name="image" id="image-input" class="form-control mb-3">
+
+    <div id="preview-container" style="display:none;">
+        <label class="fw-semibold">Selected Preview</label>
+        <div class="mb-2"><img id="preview-image" class="img-thumbnail" style="max-width:200px; height:auto;"/></div>
+    </div>
+
+    <label class="fw-semibold">Or Image URL</label>
+    <input type="url" name="image_url" value="" class="form-control mb-3" placeholder="https://example.com/image.jpg">
+
+    <button class="btn btn-primary w-100">Save Changes</button>
+</form>
+
+<script>
+document.addEventListener('DOMContentLoaded', function(){
+    const input = document.getElementById('image-input');
+    const preview = document.getElementById('preview-image');
+    const container = document.getElementById('preview-container');
+    if (!input) return;
+    input.addEventListener('change', function(e){
+        const file = e.target.files && e.target.files[0];
+        if (!file) {
+            container.style.display = 'none';
+            return;
+        }
+        const url = URL.createObjectURL(file);
+        preview.src = url;
+        container.style.display = 'block';
+    });
+});
+</script>
+
+{% endblock %}
+    
