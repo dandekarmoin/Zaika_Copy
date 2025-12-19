@@ -1,31 +1,254 @@
 {% extends 'adminpanel/base_admin.html' %}
 {% block content %}
 
-<h2 class="fw-bold mb-4">Dashboard</h2>
-
-<div class="row">
-
-    <div class="col-md-3">
-        <div class="card shadow-sm p-3">
-            <h4>Total Orders</h4>
-            <p class="display-6 text-primary">{{ total_orders }}</p>
-        </div>
-    </div>
-
-    <div class="col-md-3">
-        <div class="card shadow-sm p-3">
-            <h4>Total Users</h4>
-            <p class="display-6 text-success">{{ total_users }}</p>
-        </div>
-    </div>
-
-    <div class="col-md-3">
-        <div class="card shadow-sm p-3">
-            <h4>Menu Items</h4>
-            <p class="display-6 text-warning">{{ total_menu_items }}</p>
-        </div>
-    </div>
-
+<div class="d-flex justify-content-between align-items-center m-4">
+    <h2><i class="fas fa-chart-line me-2"></i>Dashboard</h2>
+    <span class="badge bg-info" style="font-size: 13px;">Last Updated: <span id="last-update">Just now</span></span>
 </div>
+
+<!-- Quick Stats -->
+<div class="row mb-4">
+    <div class="col-md-3">
+        <a href="{% url 'admin_orders' %}?status=Pending" class="text-decoration-none">
+            <div class="summary-card" style="cursor: pointer;">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <h6 style="color: #64748b; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px;">Pending Orders</h6>
+                        <p style="color: #f59e0b; font-size: 32px; font-weight: 700; margin: 8px 0;">{{ pending_orders }}</p>
+                    </div>
+                    <i class="fas fa-hourglass-half" style="color: #f59e0b; font-size: 24px; opacity: 0.3;"></i>
+                </div>
+            </div>
+        </a>
+    </div>
+
+    <div class="col-md-3">
+        <a href="{% url 'admin_orders' %}?status=Delivered" class="text-decoration-none">
+            <div class="summary-card" style="cursor: pointer;">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <h6 style="color: #64748b; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px;">Completed Orders</h6>
+                        <p style="color: #3b82f6; font-size: 32px; font-weight: 700; margin: 8px 0;">{{ completed_orders }}</p>
+                    </div>
+                    <i class="fas fa-check-circle" style="color: #3b82f6; font-size: 24px; opacity: 0.3;"></i>
+                </div>
+            </div>
+        </a>
+    </div>
+
+    <div class="col-md-3">
+        <a href="{% url 'admin_orders' %}?status=Cancelled" class="text-decoration-none">
+            <div class="summary-card" style="cursor: pointer;">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <h6 style="color: #64748b; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px;">Cancelled Orders</h6>
+                        <p style="color: #ef4444; font-size: 32px; font-weight: 700; margin: 8px 0;">{{ cancelled_orders }}</p>
+                    </div>
+                    <i class="fas fa-times-circle" style="color: #ef4444; font-size: 24px; opacity: 0.3;"></i>
+                </div>
+            </div>
+        </a>
+    </div>
+
+    <div class="col-md-3">
+        <a href="{% url 'admin_users' %}" class="text-decoration-none">
+            <div class="summary-card" style="cursor: pointer;">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <h6 style="color: #64748b; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px;">Total Users</h6>
+                        <p style="color: #3b82f6; font-size: 32px; font-weight: 700; margin: 8px 0;">{{ total_users }}</p>
+                    </div>
+                    <i class="fas fa-users" style="color: #3b82f6; font-size: 24px; opacity: 0.3;"></i>
+                </div>
+            </div>
+        </a>
+    </div>
+</div>
+
+<!-- Sales Chart -->
+<div class="card mb-4">
+    <div class="card-header" style="background: linear-gradient(135deg, #3b82f6 0%, #0284c7 100%); color: #fff; border: none; padding: 20px;">
+        <div class="d-flex justify-content-between align-items-center">
+            <h5 class="mb-0"><i class="fas fa-chart-line me-2"></i>Sales Analytics</h5>
+            <div class="d-flex gap-2">
+                <select id="chart-type" class="form-select form-select-sm" style="width: 150px; background: #f3f4f6; border: 1px solid #d1d5db; color: #1f2937; border-radius: 6px;">
+                    <option value="daily" style="background: #ffffff;">Daily (Last 7 Days)</option>
+                    <option value="monthly" style="background: #ffffff;">Monthly (Last 6 Months)</option>
+                </select>
+                <button id="refresh-chart" class="btn btn-sm" style="background: #3b82f6; color: #fff; border: none; border-radius: 6px; padding: 8px 16px; font-weight: 600;"><i class="fas fa-sync-alt me-1"></i>Refresh</button>
+            </div>
+        </div>
+    </div>
+    <div class="card-body">
+        <canvas id="salesChart" height="100"></canvas>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header" style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); color: #fff; border: none;">
+                <h6 class="mb-0"><i class="fas fa-fire me-2" style="color: #f59e0b;"></i>Most Purchased Items</h6>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead style="background: #f1f5f9;">
+                            <tr>
+                                <th style="color: #0f172a; font-weight: 600; text-transform: uppercase; font-size: 11px;">Item</th>
+                                <th style="color: #0f172a; font-weight: 600; text-transform: uppercase; font-size: 11px;">Qty</th>
+                                <th style="color: #0f172a; font-weight: 600; text-transform: uppercase; font-size: 11px;">Revenue</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in top_items %}
+                            <tr style="border-bottom: 1px solid #e2e8f0;">
+                                <td><strong style="color: #10b981;">{{ item.item__name }}</strong></td>
+                                <td><span class="badge bg-secondary">{{ item.total_qty }}</span></td>
+                                <td><strong style="color: #f59e0b;">₹{{ item.total_revenue|floatformat:0 }}</strong></td>
+                            </tr>
+                            {% empty %}
+                            <tr><td colspan="3" class="text-center text-muted py-4">No data available</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header" style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); color: #fff; border: none;">
+                <h6 class="mb-0"><i class="fas fa-crown me-2" style="color: #8b5cf6;"></i>Top Spending Users</h6>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead style="background: #f1f5f9;">
+                            <tr>
+                                <th style="color: #0f172a; font-weight: 600; text-transform: uppercase; font-size: 11px;">User</th>
+                                <th style="color: #0f172a; font-weight: 600; text-transform: uppercase; font-size: 11px;">Orders</th>
+                                <th style="color: #0f172a; font-weight: 600; text-transform: uppercase; font-size: 11px;">Spent</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for u in top_users %}
+                            <tr style="border-bottom: 1px solid #e2e8f0;">
+                                <td><strong style="color: #10b981;">{{ u.user__username }}</strong></td>
+                                <td><span class="badge" style="background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);">{{ u.total_orders }}</span></td>
+                                <td><strong style="color: #f59e0b;">₹{{ u.total_spent|floatformat:0 }}</strong></td>
+                            </tr>
+                            {% empty %}
+                            <tr><td colspan="3" class="text-center text-muted py-4">No data available</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Recent Activity -->
+<div class="card">
+    <div class="card-header" style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); color: #fff; border: none;">
+        <h6 class="mb-0"><i class="fas fa-history me-2"></i>Recent User Activity</h6>
+    </div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead style="background: #f1f5f9;">
+                    <tr>
+                        <th style="color: #0f172a; font-weight: 600; text-transform: uppercase; font-size: 11px;">User</th>
+                        <th style="color: #0f172a; font-weight: 600; text-transform: uppercase; font-size: 11px;">Email</th>
+                        <th style="color: #0f172a; font-weight: 600; text-transform: uppercase; font-size: 11px;">Last Order</th>
+                        <th style="color: #0f172a; font-weight: 600; text-transform: uppercase; font-size: 11px;">Amount</th>
+                        <th style="color: #0f172a; font-weight: 600; text-transform: uppercase; font-size: 11px;">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for u in recent_users %}
+                    <tr style="border-bottom: 1px solid #e2e8f0;">
+                        <td><strong style="color: #10b981;">{{ u.username }}</strong></td>
+                        <td><small class="text-muted">{{ u.email }}</small></td>
+                        <td><small class="text-muted">{{ u.last_order_date|default:"Never" }}</small></td>
+                        <td><strong style="color: #f59e0b;">₹{{ u.order_amount|floatformat:0|default:"0" }}</strong></td>
+                        <td>
+                            <a href="{% url 'admin_users' %}" class="btn btn-sm" style="background: #0f172a; border: 1px solid #10b981; color: #10b981; padding: 4px 10px; font-size: 11px; border-radius: 4px; transition: all 0.2s;" onmouseover="this.style.background='#10b981'; this.style.color='#fff';" onmouseout="this.style.background='#0f172a'; this.style.color='#10b981';"><i class="fas fa-eye"></i></a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="5" class="text-center text-muted py-4">No recent activity</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const salesCtx = document.getElementById('salesChart').getContext('2d');
+    let salesChart = null;
+
+    function fetchAndRender(){
+        const type = document.getElementById('chart-type').value;
+        const range = type === 'monthly' ? 6 : 7;
+        fetch(`{% url 'admin_sales_data' %}?type=${type}&range=${range}`)
+            .then(res => res.json())
+            .then(json => {
+                const labels = json.labels;
+                const data = json.data;
+                const cfg = {
+                    type: 'line',
+                    data: { 
+                        labels: labels, 
+                        datasets: [{ 
+                            label: 'Revenue (₹)', 
+                            data: data, 
+                            backgroundColor: 'rgba(16, 185, 129, 0.1)', 
+                            borderColor: '#10b981', 
+                            borderWidth: 3,
+                            fill: true,
+                            tension: 0.4,
+                            pointBackgroundColor: '#10b981',
+                            pointBorderColor: '#fff',
+                            pointBorderWidth: 2,
+                            pointRadius: 5,
+                            pointHoverRadius: 7
+                        }]
+                    },
+                    options: { 
+                        responsive: true, 
+                        maintainAspectRatio: true,
+                        plugins: { 
+                            legend: { display: false },
+                            tooltip: { mode: 'index', backgroundColor: 'rgba(15, 23, 42, 0.9)', padding: 12, titleFont: { size: 14 }, bodyFont: { size: 13 } } 
+                        }, 
+                        scales: { 
+                            y: { beginAtZero: true, grid: { color: '#e2e8f0' }, ticks: { color: '#64748b' } },
+                            x: { grid: { display: false }, ticks: { color: '#64748b' } }
+                        } 
+                    }
+                };
+                if(salesChart) salesChart.destroy();
+                salesChart = new Chart(salesCtx, cfg);
+                updateLastUpdate();
+            });
+    }
+
+    function updateLastUpdate(){
+        const now = new Date();
+        const time = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+        document.getElementById('last-update').textContent = time;
+    }
+
+    document.getElementById('refresh-chart').addEventListener('click', fetchAndRender);
+    document.getElementById('chart-type').addEventListener('change', fetchAndRender);
+    // initial render
+    fetchAndRender();
+</script>
 
 {% endblock %}

@@ -11,6 +11,10 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 import os
 from pathlib import Path
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -20,10 +24,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-u-r4mpl#vd&v*bt^a-n-*bwgf9$+fej6f5=7y-x)-@vw)@kqpu'
+SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-fallback-key-change-in-production')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv('DEBUG', 'False') == 'True'
 
 ALLOWED_HOSTS = []
 
@@ -142,9 +146,9 @@ AUTH_USER_MODEL = "auth.User"
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 #-------- CashFree payment ------------
-CASHFREE_CLIENT_ID = "TEST106971669845284715cc2c69ad6b66179601"
-CASHFREE_CLIENT_SECRET = "cfsk_ma_test_78792a2525c5fa0b999b72f3aed17ba0_c02e6c8f"
-CASHFREE_BASE_URL = "https://sandbox.cashfree.com/pg"
+CASHFREE_CLIENT_ID = os.getenv('CASHFREE_CLIENT_ID', '')
+CASHFREE_CLIENT_SECRET = os.getenv('CASHFREE_CLIENT_SECRET', '')
+CASHFREE_BASE_URL = os.getenv('CASHFREE_BASE_URL', 'https://sandbox.cashfree.com/pg')
 
 os.getenv('CASHFREE_CLIENT_ID', '')
 CASHFREE_CLIENT_SECRET = os.getenv('CASHFREE_CLIENT_SECRET', '')

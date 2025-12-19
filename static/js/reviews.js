@@ -15,9 +15,4 @@ document.addEventListener('DOMContentLoaded', function () {
 
   prev.addEventListener('click', () => { scrollToIndex(Math.max(0, idx - 1)); });
   next.addEventListener('click', () => { scrollToIndex(Math.min(cards.length - 1, idx + 1)); });
-
-  // auto-advance every 5s
-  let auto = setInterval(() => { scrollToIndex((idx + 1) % cards.length) }, 5000);
-  [prev, next, slider].forEach(el => el.addEventListener('mouseenter', () => clearInterval(auto)));
-  [prev, next, slider].forEach(el => el.addEventListener('mouseleave', () => { auto = setInterval(() => { scrollToIndex((idx + 1) % cards.length) }, 5000); }));
 });

@@ -19,7 +19,7 @@
 <body>
 
 <!-- TOP NAVBAR -->
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm fixed-top animate__animated animate__fadeInDown">
+<nav class="navbar navbar-expand-lg navbar-light shadow-sm fixed-top animate__animated animate__fadeInDown">
     <div class="container-fluid">
         <a class="navbar-brand fw-bold" href="{% url 'admin_dashboard' %}">ZaikaX Admin</a>
 
@@ -31,16 +31,15 @@
         <div class="collapse navbar-collapse" id="navbarNav">
 
             <ul class="navbar-nav ms-auto">
-                <li class="nav-item">
-                    <a class="nav-link text-white" href="#">
-                        <i class="fa-solid fa-user"></i> Admin
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle text-white" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fa-solid fa-user"></i> {% if request.user.is_authenticated %}{{ request.user.username }}{% else %}Admin{% endif %}
                     </a>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link text-danger" href="{% url 'admin_logout' %}">
-                        <i class="fa-solid fa-right-from-bracket"></i> Logout
-                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item text-black" href="{% url 'admin_profile' %}"><i class="fa-solid fa-id-badge me-2"></i> Profile</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item text-danger" href="{% url 'admin_logout' %}"><i class="fa-solid fa-right-from-bracket me-2"></i> Logout</a></li>
+                    </ul>
                 </li>
             </ul>
         </div>
@@ -52,24 +51,24 @@
 <div class="d-flex" style="margin-top:70px;">
 
     <!-- SIDEBAR -->
-    <div class="sidebar bg-dark text-white p-3">
-        <h4 class="text-center mb-4">Menu</h4>
+    <div class="sidebar p-3 pt-4" style="background: linear-gradient(180deg, #1e3a8a 0%, #1e40af 100%); width: 280px; min-height: 100vh; color: white;">
+        <h4 class="text-center mb-4" style="color: #e0e7ff; font-weight: 700; letter-spacing: 0.5px;">Menu</h4>
 
-        <a href="{% url 'admin_dashboard' %}" class="sidebar-link">
-            <i class="fa-solid fa-gauge"></i> Dashboard
+        <a href="{% url 'admin_dashboard' %}" class="sidebar-link" style="display: flex; align-items: center; gap: 12px; padding: 14px 16px; color: #e0e7ff; text-decoration: none; border-left: 3px solid transparent; transition: all 0.3s ease; font-weight: 500; border-radius: 8px; margin-bottom: 8px;" onmouseover="this.style.background='rgba(59, 130, 246, 0.2)'; this.style.borderLeftColor='#3b82f6'; this.style.color='#fff';" onmouseout="this.style.background='transparent'; this.style.borderLeftColor='transparent'; this.style.color='#e0e7ff';">
+            <i class="fa-solid fa-gauge" style="color: #60a5fa; font-size: 18px; width: 20px;"></i> Dashboard
         </a>
 
         <!-- FIXED URL -->
-        <a href="{% url 'admin_menu' %}" class="sidebar-link">
-            <i class="fa-solid fa-burger"></i> Manage Menu
+        <a href="{% url 'admin_menu' %}" class="sidebar-link" style="display: flex; align-items: center; gap: 12px; padding: 14px 16px; color: #e0e7ff; text-decoration: none; border-left: 3px solid transparent; transition: all 0.3s ease; font-weight: 500; border-radius: 8px; margin-bottom: 8px;" onmouseover="this.style.background='rgba(59, 130, 246, 0.2)'; this.style.borderLeftColor='#3b82f6'; this.style.color='#fff';" onmouseout="this.style.background='transparent'; this.style.borderLeftColor='transparent'; this.style.color='#e0e7ff';">
+            <i class="fa-solid fa-burger" style="color: #60a5fa; font-size: 18px; width: 20px;"></i> Manage Menu
         </a>
 
-        <a href="{% url 'admin_orders' %}" class="sidebar-link">
-            <i class="fa-solid fa-cart-shopping"></i> Orders
+        <a href="{% url 'admin_orders' %}" class="sidebar-link" style="display: flex; align-items: center; gap: 12px; padding: 14px 16px; color: #e0e7ff; text-decoration: none; border-left: 3px solid transparent; transition: all 0.3s ease; font-weight: 500; border-radius: 8px; margin-bottom: 8px;" onmouseover="this.style.background='rgba(59, 130, 246, 0.2)'; this.style.borderLeftColor='#3b82f6'; this.style.color='#fff';" onmouseout="this.style.background='transparent'; this.style.borderLeftColor='transparent'; this.style.color='#e0e7ff';">
+            <i class="fa-solid fa-cart-shopping" style="color: #60a5fa; font-size: 18px; width: 20px;"></i> Orders
         </a>
 
-        <a href="{% url 'admin_users' %}" class="sidebar-link">
-            <i class="fa-solid fa-users"></i> Users
+        <a href="{% url 'admin_users' %}" class="sidebar-link" style="display: flex; align-items: center; gap: 12px; padding: 14px 16px; color: #e0e7ff; text-decoration: none; border-left: 3px solid transparent; transition: all 0.3s ease; font-weight: 500; border-radius: 8px; margin-bottom: 8px;" onmouseover="this.style.background='rgba(59, 130, 246, 0.2)'; this.style.borderLeftColor='#3b82f6'; this.style.color='#fff';" onmouseout="this.style.background='transparent'; this.style.borderLeftColor='transparent'; this.style.color='#e0e7ff';">
+            <i class="fa-solid fa-users" style="color: #60a5fa; font-size: 18px; width: 20px;"></i> Users
         </a>
 
     </div>
