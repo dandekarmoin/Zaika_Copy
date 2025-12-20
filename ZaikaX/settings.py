@@ -146,10 +146,10 @@ AUTH_USER_MODEL = "auth.User"
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 #-------- CashFree payment ------------
-CASHFREE_CLIENT_ID = os.getenv('CASHFREE_CLIENT_ID', '')
-CASHFREE_CLIENT_SECRET = os.getenv('CASHFREE_CLIENT_SECRET', '')
-CASHFREE_BASE_URL = os.getenv('CASHFREE_BASE_URL', 'https://sandbox.cashfree.com/pg')
+# CASHFREE_CLIENT_ID = os.getenv('CASHFREE_CLIENT_ID', '')
+# CASHFREE_CLIENT_SECRET = os.getenv('CASHFREE_CLIENT_SECRET', '')
+# CASHFREE_BASE_URL = os.getenv('CASHFREE_BASE_URL', 'https://sandbox.cashfree.com/pg')
 
-os.getenv('CASHFREE_CLIENT_ID', '')
-CASHFREE_CLIENT_SECRET = os.getenv('CASHFREE_CLIENT_SECRET', '')
-CASHFREE_BASE_URL = os.getenv('CASHFREE_BASE_URL', 'https://sandbox.cashfree.com/pg')
+# os.getenv('CASHFREE_CLIENT_ID', '')
+# CASHFREE_CLIENT_SECRET = os.getenv('CASHFREE_CLIENT_SECRET', '')
+# CASHFREE_BASE_URL = os.getenv('CASHFREE_BASE_URL', 'https://sandbox.cashfree.com/pg')
