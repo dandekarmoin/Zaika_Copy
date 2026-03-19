@@ -1,0 +1,57 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ZaikaX</title>
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+
+<header>
+    <div class="navbar">
+        <a href="{% url 'home' %}" class="logo">Zaika<span>X</span></a>
+
+        <nav>
+            <a href="{% url 'menu_list' %}">Menu</a>
+            <a href="{% url 'about' %}">About</a>
+            <a href="{% url 'contact' %}">Contact</a>
+            <a href="{% url 'cart' %}">Cart
+                {% if cart_count %}
+                    <span class="cart-badge">{{ cart_count }}</span>
+                {% endif %}
+            </a>
+
+            {% if user.is_authenticated %}
+                <a href="{% url 'logout' %}">Logout</a>
+            {% else %}
+                <a href="{% url 'login' %}" class="login-btn">Login</a>
+            {% endif %}
+        </nav>
+    </div>
+</header>
+
+<main>
+    {% block content %}
+    {% endblock content %}
+    {% if messages %}
+<div class="messages">
+    {% for message in messages %}
+        <div class="alert alert-warning" style="padding: 10px; margin: 10px 0; background-color: #ffefc5; border-left: 5px solid #ff9900;">
+            {{ message }}
+        </div>
+    {% endfor %}
+</div>
+{% endif %}
+</main>
+
+<footer>
+    © 2025 ZaikaX — All Rights Reserved.
+</footer>
+
+
+<script src="https://sdk.cashfree.com/js/v3/cashfree.js"></script>
+
+</body>
+</html>

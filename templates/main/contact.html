@@ -1,0 +1,189 @@
+{% extends 'main/base.html' %}
+
+{% block content %}
+
+<style>
+    /* --------------------------
+       0. General Reset & Layout
+       -------------------------- */
+    .contact-section {
+        padding: 0;
+        background-color: #fff;
+        font-family: 'Helvetica Neue', Arial, sans-serif;
+        color: #333;
+    }
+
+    /* --------------------------
+       1. Hero Header
+       -------------------------- */
+    .contact-hero {
+        background-color: #f3a000; /* Orange/Gold Accent */
+        color: white;
+        text-align: center;
+        padding: 80px 20px;
+    }
+
+    .contact-hero h1 {
+        font-family: 'Georgia', serif;
+        font-size: 3.5em;
+        margin-bottom: 5px;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+    }
+
+    .contact-hero p {
+        font-size: 1.2em;
+        font-weight: 300;
+        margin-top: 0;
+        opacity: 0.9;
+    }
+
+    /* --------------------------
+       2. Main Content Grid (Details & Form)
+       -------------------------- */
+    .contact-grid {
+        display: flex;
+        flex-wrap: wrap;
+        max-width: 1200px;
+        margin: 50px auto;
+        padding: 0 5%;
+        gap: 40px;
+    }
+
+    /* Contact Details Sidebar */
+    .contact-details {
+        flex: 1;
+        min-width: 300px;
+        padding: 30px;
+        background-color: #f7f5f2; /* Light creamy background */
+        border-radius: 10px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        height: fit-content; /* Ensure it wraps content */
+    }
+
+    .contact-details h2 {
+        color: #387040; /* Deep Green */
+        font-size: 2em;
+        margin-bottom: 30px;
+        border-bottom: 2px solid #38704050;
+        padding-bottom: 10px;
+    }
+
+    .contact-details .info-block {
+        margin-bottom: 25px;
+        line-height: 1.5;
+    }
+
+    .contact-details .info-block strong {
+        display: block;
+        font-size: 1.2em;
+        color: #555;
+        margin-bottom: 5px;
+    }
+
+    .contact-details .info-block span,
+    .contact-details .info-block a {
+        font-size: 1.1em;
+        color: #000;
+        text-decoration: none;
+    }
+    
+    .contact-details .info-block a:hover {
+        color: #f3a000;
+        text-decoration: underline;
+    }
+
+
+    /* Form Area */
+    .contact-form-area {
+        flex: 2;
+        min-width: 400px;
+    }
+
+    .contact-form-area h2 {
+        color: #387040; /* Deep Green */
+        font-size: 2em;
+        margin-bottom: 20px;
+    }
+
+    /* Embedded Google Form Styles */
+    .google-form-embed {
+        border-radius: 10px;
+        overflow: hidden; /* Ensures iframe corners are rounded */
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+        width: 100%;
+        min-height: 850px; /* Adjust height based on your form length */
+    }
+
+    .google-form-embed iframe {
+        width: 100%;
+        height: 100%;
+        border: none;
+    }
+
+
+    /* --------------------------
+       3. Responsiveness
+       -------------------------- */
+    @media (max-width: 800px) {
+        .contact-grid {
+            flex-direction: column;
+            margin: 30px auto;
+        }
+        
+        .contact-details {
+            order: 1; /* Place details above the form on small screens */
+        }
+        
+        .contact-form-area {
+            order: 2;
+        }
+    }
+</style>
+
+<section class="contact-section">
+    
+    <header class="contact-hero">
+        <h1>Let's Connect</h1>
+        <p>Whether you have a query, feedback, or need help with an order, we're here for you.</p>
+    </header>
+    
+    <div class="contact-grid">
+        
+        <div class="contact-details">
+            <h2>Reach Out Directly</h2>
+            
+            <div class="info-block">
+                <strong>📧 General Inquiries</strong>
+                <a href="mailto:support@zaikax.com">support@zaikax.com</a>
+            </div>
+            
+            <div class="info-block">
+                <strong>📞 Place an Order / Urgent Support</strong>
+                <span>+91 98765 43210</span>
+            </div>
+            
+            <div class="info-block">
+                <strong>📍 Our Location</strong>
+                <span>New Delhi, India (Kitchen/Head Office)</span>
+            </div>
+        </div>
+        
+        <div class="contact-form-area">
+            <h2>Send Us Your Query</h2>
+            
+            <p>Fill out the form below for non-urgent matters. We typically respond within 1-2 business days.</p>
+            
+            <div class="google-form-embed">
+                <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSfqCa7wxNuulpcuPS6zKYukPvoOTv5Tg36XEgVcZZarIE5VrA/viewform?usp=publish-editor" 
+                        frameborder="0" 
+                        marginheight="0" 
+                        marginwidth="0" 
+                        title="ZaikaX Contact Form">Loading…</iframe>
+            </div>
+        </div>
+        
+    </div>
+
+</section>
+
+{% endblock %}

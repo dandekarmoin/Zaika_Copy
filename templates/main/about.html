@@ -1,0 +1,190 @@
+{% extends 'main/base.html' %}
+
+{% block content %}
+
+<style>
+    /* --------------------------
+       0. General Reset & Layout
+       -------------------------- */
+    .about-section {
+        padding: 0; 
+        background-color: #fff;
+        font-family: 'Helvetica Neue', Arial, sans-serif;
+        color: #333;
+    }
+
+    /* --------------------------
+       1. Hero Header (The Hook)
+       -------------------------- */
+    .about-hero {
+        /* Replaced background image with a solid color/gradient for impact */
+        background-color: #387040; /* Deep Green */
+        background: linear-gradient(135deg, #387040 0%, #4a804e 100%); 
+        color: white;
+        text-align: center;
+        padding: 100px 20px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); 
+    }
+
+    .about-hero h1 {
+        font-family: 'Georgia', serif;
+        font-size: 4.5em;
+        margin-bottom: 10px;
+        text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.4);
+    }
+
+    .about-hero p {
+        font-size: 1.5em;
+        font-weight: 300;
+        margin-top: 0;
+        max-width: 800px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    /* --------------------------
+       2. Story/Mission Section
+       -------------------------- */
+    .story-mission {
+        /* No images means we stack the content nicely */
+        padding: 80px 5%;
+        background-color: #f7f5f2; /* Light creamy background */
+        text-align: center; /* Center the stacked content */
+    }
+
+    .story-content {
+        max-width: 800px;
+        margin: 0 auto; /* Center the content block */
+    }
+    
+    .story-content h2 {
+        color: #387040; /* Deep Green Accent */
+        font-size: 2.5em;
+        border-bottom: 3px solid #f3a000; /* Orange/Gold underline */
+        padding-bottom: 10px;
+        margin-bottom: 20px;
+    }
+
+    .story-content p {
+        line-height: 1.8;
+        font-size: 1.1em;
+        margin-bottom: 25px;
+    }
+
+    /* --------------------------
+       3. Value Proposition (Grid)
+       -------------------------- */
+    .value-grid {
+        padding: 80px 5%;
+        text-align: center;
+        background-color: white;
+    }
+
+    .value-grid h2 {
+        color: #555;
+        font-size: 2em;
+        margin-bottom: 50px;
+    }
+
+    .cards-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 30px;
+    }
+
+    .value-card {
+        padding: 30px;
+        border-radius: 10px;
+        background-color: #fafafa;
+        border: 1px solid #eee; /* Added border since there's no shadow image */
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        transition: all 0.3s;
+    }
+
+    .value-card:hover {
+        transform: translateY(-5px);
+        background-color: #f3a0001a; 
+    }
+
+    .value-card .icon {
+        font-size: 3em;
+        color: #f3a000; /* Orange/Gold Accent */
+        margin-bottom: 15px;
+        display: block; /* Ensures icon is centered */
+    }
+
+    .value-card h3 {
+        color: #387040;
+        font-size: 1.4em;
+        margin-bottom: 10px;
+    }
+
+    .value-card p {
+        font-size: 1em;
+        color: #666;
+    }
+
+    /* --------------------------
+       4. Responsiveness
+       -------------------------- */
+    @media (max-width: 768px) {
+        .about-hero h1 {
+            font-size: 3em;
+        }
+
+        .about-hero p {
+            font-size: 1.2em;
+        }
+    }
+</style>
+
+<section class="about-section">
+    
+    <header class="about-hero">
+        <h1>Our Story, Our Flavour</h1>
+        <p>Bringing the authentic, heartwarming taste of India right to your table, fast and fresh.</p>
+    </header>
+    
+    <hr>
+    
+    <div class="story-mission">
+        <div class="story-content">
+            <h2>The ZaikaX Promise</h2>
+            <p>
+                ZaikaX wasn't founded just to serve food; it was created to deliver <strong>nostalgia</strong>. We believe that the best Indian food is made in the home kitchen—with <strong>fresh ingredients</strong>, traditional methods, and a lot of <strong>passion</strong>.
+            </p>
+            <p>
+                Our commitment is to bridge the gap between authentic, slow-cooked flavors and the speed of modern life. Every dish is a tribute to India's culinary heritage, guaranteeing <strong>delicious flavors</strong> and meals crafted to satisfy every craving.
+            </p>
+            <p style="font-style: italic; color: #555; margin-top: 30px;">
+                "Crafted with tradition, delivered with care."
+            </p>
+        </div>
+    </div>
+    
+    <hr>
+    
+    <div class="value-grid">
+        <h2>What Makes Us Special?</h2>
+        <div class="cards-container">
+            <div class="value-card">
+                <span class="icon">🌶️</span>
+                <h3>Authentic Recipes</h3>
+                <p>We use <strong>time-honored family recipes</strong> and traditional spices to ensure every bite is truly Indian.</p>
+            </div>
+            <div class="value-card">
+                <span class="icon">🥦</span>
+                <h3>Fresh Ingredients</h3>
+                <p><strong>Sourcing local, fresh produce daily</strong> ensures high quality and vibrant, natural flavors in every meal.</p>
+            </div>
+            <div class="value-card">
+                <span class="icon">🛵</span>
+                <h3>Speedy Delivery</h3>
+                <p>Delicious food doesn't have to wait. We promise <strong>fast, reliable service</strong> right to your doorstep.</p>
+            </div>
+        </div>
+    </div>
+
+</section>
+
+{% endblock %}

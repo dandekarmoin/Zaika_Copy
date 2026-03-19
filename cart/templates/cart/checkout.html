@@ -1,0 +1,148 @@
+{% extends 'main/base.html' %}
+{% block content %}
+
+<div class="checkout-container">
+    <h2 class="checkout-title">Final Checkout</h2>
+
+    <div class="checkout-card">
+        <h4>Delivery Information</h4>
+
+        <div class="info-box">
+            <strong>User:</strong> {{ request.user.username }}<br>
+            <strong>Email:</strong> {{ request.user.email }}
+        </div>
+
+        <form id="checkoutForm" class="checkout-form" method="POST" action="{% url 'process_order' %}">
+            {% csrf_token %}
+            <div class="form-group">
+                <label>Delivery Address</label>
+                <select name="selected_address" id="selected_address" style="width:100%; padding:8px;" aria-label="Select delivery address">
+                    <option value="">-- Choose saved address --</option>
+                    {% for a in addresses %}
+                        <option value="{{ a.id }}" {% if default_address_id and a.id == default_address_id %}selected{% endif %}>{{ a.full_name }} — {{ a.address_line1 }}, {{ a.city }} ({{ a.pincode }})</option>
+                    {% endfor %}
+                    <option value="new">+ Add another delivery address</option>
+                </select>
+            </div>
+
+            <div id="newAddressBox" style="display:none;">
+                {% if address_form %}
+                    {% for field in address_form %}
+                        <div class="form-group">
+                            <label>{{ field.label }}</label>
+                            {{ field }}
+                            {{ field.errors }}
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="form-group"><label>Full Name</label><input name="full_name"></div>
+                    <div class="form-group"><label>Phone</label><input name="phone"></div>
+                    <div class="form-group"><label>Address Line1</label><input name="address_line1"></div>
+                    <div class="form-group"><label>Address Line2</label><input name="address_line2"></div>
+                    <div class="form-group"><label>City</label><input name="city"></div>
+                    <div class="form-group"><label>State</label><input name="state"></div>
+                    <div class="form-group"><label>Pincode</label><input name="pincode"></div>
+                    <div class="form-group"><label>Country</label><input name="country"></div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label>Delivery Instructions (Optional)</label>
+                <textarea name="instructions" rows="2"></textarea>
+            </div>
+
+            <button type="submit" id="payBtn" class="btn btn-success">Place Order</button>
+        </form>
+    </div>
+</div>
+
+<!-- Cashfree Checkout SDK -->
+<script src="https://sdk.cashfree.com/js/v3/cashfree.js"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const payBtn = document.getElementById("payBtn");
+
+    if (!payBtn) {
+        console.error("Pay button NOT found");
+        return;
+    }
+
+    // Initialize Cashfree in sandbox mode
+    const cashfree = Cashfree({
+        mode: "sandbox"  // switch to "production" when you go live
+    });
+
+    // toggle new address box when user selects "Add another delivery address"
+    const selectAddr = document.getElementById('selected_address');
+    const newAddressBox = document.getElementById('newAddressBox');
+    if (selectAddr && newAddressBox) {
+        selectAddr.addEventListener('change', function(e){
+            newAddressBox.style.display = e.target.value === 'new' ? 'block' : 'none';
+        });
+        // on load: if the select default is 'new', show box
+        if (selectAddr.value === 'new') newAddressBox.style.display = 'block';
+    }
+
+    // Restore async Cashfree flow: POST address/cart to backend, get payment_session_id, then launch Cashfree
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    payBtn.addEventListener("click", async function (e) {
+        e.preventDefault();
+        try {
+            // Build payload
+            const selectedAddress = document.querySelector('select[name="selected_address"]') ? document.querySelector('select[name="selected_address"]').value : '';
+            const payload = { selected_address: selectedAddress, amount: {{ total|default:0 }}, currency: 'INR' };
+
+            if (selectedAddress === 'new') {
+                // collect fields from newAddressBox inputs
+                const box = document.getElementById('newAddressBox');
+                const inputs = box.querySelectorAll('input, textarea');
+                inputs.forEach(i => { if (i.name) payload[i.name] = i.value; });
+            }
+
+            const csrftoken = getCookie('csrftoken');
+
+            const resp = await fetch('/payment/create-order/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrftoken,
+                },
+                body: JSON.stringify(payload)
+            });
+
+            if (!resp.ok) throw new Error('Failed to create order on server');
+
+            const data = await resp.json();
+            const paymentSessionId = data.payment_session_id;
+            if (!paymentSessionId) throw new Error('No payment_session_id received');
+
+            // Launch Cashfree checkout
+            cashfree.checkout({
+                paymentSessionId: paymentSessionId,
+                redirectTarget: '_self'
+            });
+
+        } catch (err) {
+            console.error('Error initiating payment:', err);
+            alert('Could not start payment. See console for details.');
+        }
+    });
+});
+</script>
+
+{% endblock %}
